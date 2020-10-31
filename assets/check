@@ -1,0 +1,37 @@
+#!/bin/bash
+#
+
+set -e
+IFS=" "
+
+exec 3>&1 # make stdout available as fd 3 for the result
+exec 1>&2 # redirect all output to stderr for logging
+
+source $(dirname $0)/common.sh
+
+parse_source_config
+
+output_single_version() {
+  cat >&3 <<EOF
+[
+  { "ref": "$1" }
+]
+EOF
+}
+
+output_empty_list() {
+  cat >&3 <<EOF
+[]
+EOF
+}
+
+LATEST_VERSION=$(curl -L -s $URL/repository.yaml | yq r - 'last_update')
+if [ -z "$LATEST_VERSION" ]; then
+
+  output_empty_list
+
+else 
+
+  output_single_version $LATEST_VERSION
+
+fi

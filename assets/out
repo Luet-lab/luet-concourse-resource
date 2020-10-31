@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo "This resource doesn't push to luet repositories (yet?)"
+
+exit 1

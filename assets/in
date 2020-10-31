@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "This resource doesn't pull luet repositories (yet?)"
+
+exit 1
