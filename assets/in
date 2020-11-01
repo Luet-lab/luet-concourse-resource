@@ -1,5 +1,35 @@
 #!/bin/sh
+#
 
-echo "This resource doesn't pull luet repositories (yet?)"
+set -e
+IFS=" "
 
-exit 1
+exec 3>&1 # make stdout available as fd 3 for the result
+exec 1>&2 # redirect all output to stderr for logging
+
+source $(dirname $0)/common.sh
+
+parse_source_config
+
+DESTINATION_DIR=$1
+
+cd $DESTINATION_DIR
+
+export HELM_REPO="$URL"
+if [ -z "$VERSION" ] || [ "$VERSION" == "latest" ]; then
+  curl -L -s $URL/repository.yaml -O repository.yaml
+  VERSION=$(cat repository.yaml | yq r - 'last_update')
+  else
+  curl -L -s $URL/repository.yaml -O repository.yaml
+  VERSION=$(cat repository.yaml | yq r - 'last_update')
+fi
+
+REPOSITORY_FILE=$(ls *.yaml)
+cat >&3 <<EOF
+{
+  "version": { "ref": "$VERSION" },
+  "metadata": [
+    { "name": "comment", "value": "$REPOSITORY_FILE" }
+  ]
+}
+EOF
