@@ -17,10 +17,10 @@ cd $DESTINATION_DIR
 
 export HELM_REPO="$URL"
 if [ -z "$VERSION" ] || [ "$VERSION" == "latest" ]; then
-  curl -L -s $URL/repository.yaml -O repository.yaml
+  curl -s -L $URL/repository.yaml -o repository.yaml
   VERSION=$(cat repository.yaml | yq r - 'last_update')
   else
-  curl -L -s $URL/repository.yaml -O repository.yaml
+  curl -s -L $URL/repository.yaml -o repository.yaml
   VERSION=$(cat repository.yaml | yq r - 'last_update')
 fi
 
